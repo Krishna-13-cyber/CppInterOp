@@ -29,13 +29,13 @@ Build cling with LLVM and clang:
    cmake --build . --target cling --parallel $(nproc --all)
    cmake --build . --target gtest_main --parallel $(nproc --all)
 
-Note down the llvm-project directory location as we will need it later:
+   Note down the llvm-project directory location as we will need it later:
 
    cd ../
    export LLVM_DIR=$PWD
    cd ../
 
-Clone the InterOp repo. Build it using cling and install. Note down the path to InterOp install directory. This will be referred to as INTEROP_DIR:
+   Clone the InterOp repo. Build it using cling and install. Note down the path to InterOp install directory. This will be referred to as INTEROP_DIR:
 
    export INTEROP_DIR=$PWD/cppyy-backend/python/cppyy_backend
    git clone https://github.com/compiler-research/InterOp.git
