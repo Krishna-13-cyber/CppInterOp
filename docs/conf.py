@@ -48,11 +48,10 @@ mathjax3_config = {
 import os
 
 # if os.environ.get("BUILD_DOCS"):
-
-html_extra_path = [INTEROP_ROOT + '/build/docs/']
-
 current_file_dir = os.path.dirname(os.path.realpath(__file__))
 INTEROP_ROOT = '..' + current_file_dir
+
+html_extra_path = [INTEROP_ROOT + '/build/docs/']
 
 import subprocess
 command = 'mkdir {0}/build; cd {0}/build; cmake ../ -DClang_DIR=/usr/lib/llvm-10/lib/cmake/clang\
