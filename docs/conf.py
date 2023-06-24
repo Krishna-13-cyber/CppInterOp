@@ -51,7 +51,7 @@ import os
 current_file_dir = os.path.dirname(os.path.realpath(__file__))
 INTEROP_ROOT = '..' + current_file_dir
 
-html_extra_path = [INTEROP_ROOT + '/build/docs/']
+html_extra_path = [INTEROP_ROOT + '/build/docs/build/html/']
 
 import subprocess
 command = 'mkdir {0}/build; cd {0}/build; cmake ../ -DClang_DIR=/usr/lib/llvm-10/lib/cmake/clang\
