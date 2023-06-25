@@ -25,7 +25,6 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'alabaster'
-html_static_path = ['_static']
 
 html_theme_options = {
     "github_user": "vgvassilev",
@@ -48,14 +47,13 @@ mathjax3_config = {
 import os
 
 # if os.environ.get("BUILD_DOCS"):
-current_file_dir = os.path.dirname(os.path.realpath(__file__))
-INTEROP_ROOT = '..' + current_file_dir
-
-html_extra_path = [INTEROP_ROOT + '/build/docs/build/html/']
+# current_file_dir = os.path.dirname(os.path.realpath(__file__))
+INTEROP_ROOT = os.path.abspath('..')
+html_extra_path = [INTEROP_ROOT + '/build/docs/']
 
 import subprocess
-command = 'mkdir {0}/build; cd {0}/build; cmake ../ -DClang_DIR=/usr/lib/llvm-10/lib/cmake/clang\
-         -DLLVM_DIR=/usr/lib/llvm-10 -DINTEROP_ENABLE_DOXYGEN=ON\
+command = 'mkdir {0}/build; cd {0}/build; cmake ../ -DClang_DIR=/usr/lib/llvm-10/build/lib/cmake/clang\
+         -DLLVM_DIR=/usr/lib/llvm-10/build/lib/cmake/llvm -DINTEROP_ENABLE_DOXYGEN=ON\
          -DINTEROP_INCLUDE_DOCS=ON'.format(INTEROP_ROOT)
 subprocess.call(command, shell=True)
 subprocess.call('doxygen {0}/build/docs/doxygen.cfg'.format(INTEROP_ROOT), shell=True)
