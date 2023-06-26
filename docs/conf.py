@@ -49,8 +49,7 @@ import os
 # if os.environ.get("BUILD_DOCS"):
 # current_file_dir = os.path.dirname(os.path.realpath(__file__))
 INTEROP_ROOT = os.path.abspath('..')
-print(INTEROP_ROOT)
-html_extra_path = [INTEROP_ROOT + '/build/docs/build/html/']
+html_extra_path = [INTEROP_ROOT + '/build/docs/']
 
 
 import subprocess
