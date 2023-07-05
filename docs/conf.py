@@ -51,8 +51,8 @@ import os
 INTEROP_ROOT = os.path.abspath('..')
 html_extra_path = [INTEROP_ROOT + '/build/docs/']
 
-# import subprocess
-# command = 'mkdir {0}/build; cd {0}/build; cmake ../ -DINTEROP_ENABLE_DOXYGEN=ON\
-#          -DINTEROP_INCLUDE_DOCS=ON'.format(INTEROP_ROOT)
-# subprocess.call(command, shell=True)
-# subprocess.call('doxygen {0}/build/docs/doxygen.cfg'.format(INTEROP_ROOT), shell=True)
+import subprocess
+command = 'mkdir {0}/build; cd {0}/build; cmake ../ -DINTEROP_ENABLE_DOXYGEN=ON\
+         -DINTEROP_INCLUDE_DOCS=ON'.format(INTEROP_ROOT)
+subprocess.call(command, shell=True)
+subprocess.call('doxygen {0}/build/docs/doxygen.cfg'.format(INTEROP_ROOT), shell=True)
