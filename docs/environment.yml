@@ -1,0 +1,7 @@
+name: CppInterOp
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - cmake
+  - libllvm13

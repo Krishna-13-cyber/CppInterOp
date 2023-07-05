@@ -4,11 +4,14 @@ sphinx:
   configuration: docs/conf.py
   builder: html
 
-build:
-  image: latest
-  apt_packages:
-    - clang-10
-    - cmake
-    - libclang-10-dev
-    - llvm-10-dev
-    - llvm-10-tools
+conda:
+  environment: docs/environment.yml
+
+# build:
+#   image: latest
+#   apt_packages:
+#     - clang-10
+#     - cmake
+#     - libclang-10-dev
+#     - llvm-10-dev
+#     - llvm-10-tools
