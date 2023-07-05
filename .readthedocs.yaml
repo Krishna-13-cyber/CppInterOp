@@ -4,14 +4,14 @@ sphinx:
   configuration: docs/conf.py
   builder: html
 
-# conda:
-#   environment: docs/environment.yml
+conda:
+  environment: docs/environment.yml
 
-build:
-  image: latest
-  apt_packages:
-    - clang-13
-    - cmake
-    - libclang-13-dev
-    - llvm-13-dev
-    - llvm-13-tools
+# build:
+#   image: latest
+#   apt_packages:
+#     - clang-13
+#     - cmake
+#     - libclang-13-dev
+#     - llvm-13-dev
+#     - llvm-13-tools

@@ -4,4 +4,4 @@ channels:
   - defaults
 dependencies:
   - cmake
-  - libllvm13
+  - llvm
