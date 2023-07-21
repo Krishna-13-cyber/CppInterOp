@@ -14,3 +14,4 @@ build:
     - libclang-13-dev
     - llvm-13-dev
     - llvm-13-tools
+    - graphviz
