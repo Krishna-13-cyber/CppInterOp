@@ -805,6 +805,24 @@ from the GetFunctionNumArgs() function.}];
   ];
 }
 
+
+def GetFunctionUsingArgs : CppInterOpAPI {
+  let Doc = [{
+Looks up a function using its name, argument types and optional
+template arguments. Returns the matching function declaration.
+  }];
+  let ReturnType = "TCppFunction_t";
+  let Args = [
+    Arg<"TCppScope_t", "scope">,
+    Arg<"const std::string&", "name">,
+    Arg<"TCppType_t*", "argTypes">,
+    Arg<"TCppIndex_t", "numArgs">,
+    Arg<"TemplateArgInfo*", "templateArgs">,
+    Arg<"TCppIndex_t", "numTemplateArgs">
+  ];
+}
+
+
 def IsConstMethod : CppInterOpAPI {
   let Doc = "Checks if a function declared is of const type or not.";
 

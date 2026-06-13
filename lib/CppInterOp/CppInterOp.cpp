@@ -5056,6 +5056,128 @@ void GetClassTemplateArgs(ConstDeclRef templ_instance,
   return INTEROP_VOID_RETURN();
 }
 
+TCppFunction_t GetFunctionUsingArgs(
+    TCppScope_t scope,
+    const std::string& name,
+    TCppType_t* argTypes,
+    TCppIndex_t numArgs,
+    TemplateArgInfo* templateArgs,
+    TCppIndex_t numTemplateArgs) {
+  INTEROP_TRACE(scope, name, argTypes, numArgs, templateArgs,
+                numTemplateArgs);
+
+  auto& S = getSema();
+
+  clang::DeclContext* DC = nullptr;
+
+  if (scope) {
+    auto* DU = static_cast<clang::Decl*>(GetUnderlyingScope(scope));
+    DC = clang::Decl::castToDeclContext(DU);
+  } else {
+    DC = getASTContext().getTranslationUnitDecl();
+  }
+
+  DeclarationName DName = &getASTContext().Idents.get(name);
+
+  clang::LookupResult R(
+      S, DName, SourceLocation(), Sema::LookupOrdinaryName,
+      RedeclarationKind::ForVisibleRedeclaration);
+
+  CppInternal::utils::Lookup::Named(&S, R, DC);
+
+  if (R.getResultKind() == clang_LookupResult_Not_Found)
+    return INTEROP_RETURN((TCppFunction_t)0);
+
+  auto MatchFunction = [&](clang::FunctionDecl* FD) -> bool {
+    if (!FD)
+      return false;
+
+    if (FD->getNumParams() != numArgs)
+      return false;
+
+    for (unsigned I = 0; I < numArgs; ++I) {
+      auto ParamTy = FD->getParamDecl(I)->getOriginalType();
+
+      if (ParamTy.getAsOpaquePtr() != argTypes[I])
+        return false;
+    }
+
+    return true;
+  };
+
+  auto MatchTemplate = [&](clang::FunctionDecl* FD) -> bool {
+    if (!FD)
+      return false;
+
+    auto* FTD = FD->getDescribedFunctionTemplate();
+
+    if (!FTD) {
+      if (auto* FSI = FD->getTemplateSpecializationInfo())
+        FTD = FSI->getTemplate();
+    }
+
+    if (!FTD)
+      return false;
+
+    return FTD->getTemplateParameters()->size() == numTemplateArgs;
+  };
+
+  auto ProcessFunction = [&](clang::FunctionDecl* FD) -> TCppFunction_t {
+    if (!FD)
+      return 0;
+
+    if (numTemplateArgs) {
+      if (MatchTemplate(FD))
+        return (TCppFunction_t)FD;
+    } else {
+      if (MatchFunction(FD))
+        return (TCppFunction_t)FD;
+    }
+
+    return 0;
+  };
+
+  auto ProcessDecl = [&](clang::NamedDecl* ND) -> TCppFunction_t {
+    if (auto* FD = llvm::dyn_cast<clang::FunctionDecl>(ND)) {
+      if (auto Result = ProcessFunction(FD))
+        return Result;
+    }
+
+    if (auto* FTD = llvm::dyn_cast<clang::FunctionTemplateDecl>(ND)) {
+      if (auto Result = ProcessFunction(FTD->getTemplatedDecl()))
+        return Result;
+    }
+
+    if (auto* USD = llvm::dyn_cast<clang::UsingShadowDecl>(ND)) {
+      if (auto* FD =
+              llvm::dyn_cast<clang::FunctionDecl>(USD->getTargetDecl())) {
+        if (auto Result = ProcessFunction(FD))
+          return Result;
+      }
+
+      if (auto* FTD = llvm::dyn_cast<clang::FunctionTemplateDecl>(
+              USD->getTargetDecl())) {
+        if (auto Result = ProcessFunction(FTD->getTemplatedDecl()))
+          return Result;
+      }
+    }
+
+    return 0;
+  };
+
+  if (R.getResultKind() == clang_LookupResult_Found)
+    return INTEROP_RETURN(ProcessDecl(R.getFoundDecl()));
+
+  if (R.getResultKind() == clang_LookupResult_Found_Overloaded) {
+    for (auto* Found : R) {
+      if (auto Result = ProcessDecl(Found))
+        return INTEROP_RETURN(Result);
+    }
+  }
+
+  return INTEROP_RETURN((TCppFunction_t)0);
+}
+
 void GetClassTemplateInstantiationArgs(ConstDeclRef templ_instance,
                                        std::vector<TemplateArgInfo>& args) {
   INTEROP_TRACE(templ_instance, INTEROP_OUT(args));
